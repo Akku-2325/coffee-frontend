@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Чек-лист Sunbula</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('duties')">👷 Задачи</div>
+        <div class="tab" onclick="switchTab('products')">📦 Остатки</div>
+    </div>
+
+    <div id="duties" class="content active"></div>
+    <div id="products" class="content"></div>
+
+    <div class="footer">
+        <button class="main-btn" onclick="sendData()">✅ Отправить отчет</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
