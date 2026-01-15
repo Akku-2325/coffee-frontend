@@ -1,115 +1,106 @@
-let tg = window.Telegram.WebApp;
-tg.expand(); 
+const tg = window.Telegram.WebApp;
+tg.expand();
 
-let duties = [
-    { title: "Включить свет / музыку / вывеску", done: false },
-    { title: "Настроить помол (Эспрессо)", done: false },
-    { title: "Проверить молоко в холодильнике", done: false },
-    { title: "Визуальная чистота бара", done: false },
-    { title: "Чистота в зале (столики)", done: false },
-    { title: "Вынести мусор", done: false },
-    { title: "Выключить оборудование (вечер)", done: false },
-    { title: "Закрыть смену в кассе", done: false }
+// === ТВОИ ДАННЫЕ ===
+const dutiesData = [
+    { category: "🌅 Открытие", items: ["Включить свет / музыку", "Открыть шторы", "Включить приточку", "Надеть униформу", "Проверить чистоту", "Проверить ингредиенты", "Включить бойлер", "Кофемашина (разогрев)", "Настроить помол", "Заварить батч-брю"] },
+    { category: "🔄 Смена", items: ["Протирать столы (каждый час)", "Проверить чистоту бара", "Улыбаться гостям"] },
+    { category: "🌙 Закрытие", items: ["Проверить остатки", "Выключить оборудование", "Вынести мусор", "Чистота зоны", "Закрыть смену в кассе"] }
 ];
 
-let products = [
-    { title: "Эспрессо смесь (Зерно)", done: false },
-    { title: "Молоко обычное 3.2%", done: false },
-    { title: "Молоко альтернативное", done: false },
-    { title: "Стаканы S / M / L", done: false },
-    { title: "Крышки для стаканов", done: false },
-    { title: "Сиропы (Ваниль, Карамель...)", done: false },
-    { title: "Салфетки / Трубочки", done: false },
-    { title: "Сахар / Сахзам", done: false },
-    { title: "Вода бутилированная", done: false },
-    { title: "Химия (средство для посуды)", done: false }
+const productsData = [
+    { category: "☕️ Зерна", items: ["Эспрессо", "Фильтр"] },
+    { category: "🥛 Молоко", items: ["Обычное", "Кокос", "Банан", "Миндаль", "Овсяное", "Безлактозное", "Сливки"] },
+    { category: "🧊 Прочее", items: ["Кокосовая вода", "Швепс", "Лёд"] },
+    { category: "🍊 Фрукты", items: ["Лимон", "Апельсин", "Лайм", "Имбирь", "Маракуйя"] },
+    { category: "❄️ Морозка", items: ["Малина", "Брусника"] },
+    { category: "🥣 Пюре", items: ["Ананас", "Апельсин", "Маракуйя", "Манго", "Облепиха", "Персик"] },
+    { category: "🍵 Чай", items: ["Черный", "Зеленый", "Улун", "Жасмин", "Дары иссыкуля", "Чабрец", "Анис", "Гвоздика", "Корица"] },
+    { category: "🧂 Сыпучие", items: ["Сахар тр.", "Сахар бел.", "Какао", "Мед", "Фруктоза", "Ванилин", "Ксантан", "Лимонка", "Матча"] },
+    { category: "🍯 Сиропы", items: ["Карамель", "Сол. карамель", "Лесной орех", "Попкорн", "Шоколад", "Айриш", "Ваниль", "Кокос"] },
+    { category: "🥤 Посуда", items: ["Стаканы S/M/L", "Крышки гор.", "Стаканы хол.", "Крышки хол.", "Капхолдеры", "Фильтры батч", "Фильтры воронка"] }
 ];
 
+// Восстанавливаем галочки
+let savedState = JSON.parse(localStorage.getItem('sunbula_checklist')) || {};
 
-function render() {
-    renderDuties();
-    renderProducts();
-}
+function renderList(targetId, dataArray, prefix) {
+    const container = document.getElementById(targetId);
+    container.innerHTML = "";
 
-function renderDuties() {
-    const list = document.getElementById('duties-list');
-    list.innerHTML = ''; 
+    dataArray.forEach(group => {
+        const header = document.createElement('div');
+        header.className = 'group-header';
+        header.innerText = group.category;
+        container.appendChild(header);
 
-    duties.forEach((item, index) => {
-        let div = document.createElement('div');
-        div.className = `item ${item.done ? 'checked' : ''}`;
-        div.onclick = () => toggleDuty(index);
-        
-        let icon = item.done ? '✅' : '⬜';
-        
-        div.innerHTML = `
-            <div class="icon">${icon}</div>
-            <div class="title">${item.title}</div>
-        `;
-        list.appendChild(div);
+        group.items.forEach(itemText => {
+            const itemId = prefix + "|" + itemText;
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'item';
+            
+            const checkboxDiv = document.createElement('div');
+            checkboxDiv.className = 'checkbox-container';
+
+            const checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.id = itemId;
+            if (savedState[itemId]) checkbox.checked = true;
+
+            checkbox.addEventListener('change', () => {
+                savedState[itemId] = checkbox.checked;
+                localStorage.setItem('sunbula_checklist', JSON.stringify(savedState));
+            });
+
+            const checkmark = document.createElement('div');
+            checkmark.className = 'checkmark';
+            checkboxDiv.append(checkbox, checkmark);
+
+            const label = document.createElement('span');
+            label.innerText = itemText;
+            label.onclick = () => checkbox.click();
+
+            itemDiv.append(checkboxDiv, label);
+            container.appendChild(itemDiv);
+        });
     });
 }
 
-function renderProducts() {
-    const list = document.getElementById('products-list');
-    list.innerHTML = '';
+// Запускаем рендер в нужные контейнеры
+renderList('duties-container', dutiesData, 'duty');
+renderList('products-container', productsData, 'prod');
 
-    products.forEach((item, index) => {
-        let div = document.createElement('div');
-        div.className = `item ${item.done ? 'checked' : ''}`;
-        div.onclick = () => toggleProduct(index);
-        
-        let icon = item.done ? '📦' : '🔻';
-        
-        div.innerHTML = `
-            <div class="icon">${icon}</div>
-            <div class="title">${item.title}</div>
-        `;
-        list.appendChild(div);
-    });
-}
-
-
-
-function toggleDuty(index) {
-    duties[index].done = !duties[index].done;
-    renderDuties();
-}
-
-function toggleProduct(index) {
-    products[index].done = !products[index].done;
-    renderProducts();
-}
-
-
-function goToStep2() {
-    document.getElementById('step1').style.display = 'none';
-    document.getElementById('step2').style.display = 'block';
+// Переключение вкладок
+function switchTab(tabName) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
     
+    document.querySelector(`.tab[onclick="switchTab('${tabName}')"]`).classList.add('active');
+    document.getElementById(tabName).classList.add('active');
     window.scrollTo(0, 0);
 }
 
-function goToStep1() {
-    document.getElementById('step2').style.display = 'none';
-    document.getElementById('step1').style.display = 'block';
-}
-
-
 function sendData() {
-    let commentDuties = document.getElementById("comment-duties").value;
-    let commentProducts = document.getElementById("comment-products").value;
+    let comm1 = document.getElementById("comment-duties").value;
+    let comm2 = document.getElementById("comment-products").value;
 
-
-    let data = {
-        duties: duties,           
-        products: products,       
-        comment_duties: commentDuties,     
-        comment_products: commentProducts 
+    const report = { 
+        duties: [], 
+        products: [],
+        comment_duties: comm1,
+        comment_products: comm2
     };
-
-    tg.sendData(JSON.stringify(data));
     
-    tg.close(); 
-}
+    dutiesData.forEach(g => g.items.forEach(i => {
+        report.duties.push({ title: i, done: savedState['duty|' + i] || false });
+    }));
+    productsData.forEach(g => g.items.forEach(i => {
+        report.products.push({ title: i, done: savedState['prod|' + i] || false });
+    }));
 
-render();
+    if(!confirm("Закрыть смену?")) return;
+
+    localStorage.removeItem('sunbula_checklist');
+    tg.sendData(JSON.stringify(report));
+    tg.close();
+}

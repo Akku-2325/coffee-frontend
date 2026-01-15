@@ -2,46 +2,45 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Чек-лист Кофейни</title>
-    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Чек-лист Sunbula</title>
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-
-    <div id="step1">
-        <div class="header">
-            <h2>🧹 ЗАДАЧИ</h2>
-            <p>Отметьте выполненное:</p>
-        </div>
-        
-        <div id="duties-list" class="list-container"></div>
-
-        <div class="comment-section">
-            <label for="comment-duties">💬 Заметка к задачам:</label>
-            <textarea id="comment-duties" rows="2" placeholder="Что-то сломалось? Не успели?"></textarea>
-        </div>
-
-        <button class="main-btn" onclick="goToStep2()">Далее ➡️</button>
+    <!-- Верхнее меню (Табы) -->
+    <div class="tabs">
+        <div class="tab active" onclick="switchTab('duties')">👷 Задачи</div>
+        <div class="tab" onclick="switchTab('products')">📦 Остатки</div>
     </div>
 
-    <div id="step2" style="display: none;">
-        <div class="header">
-            <h2>📦 ОСТАТКИ</h2>
-            <p>Отметьте, что <b>ЕСТЬ</b> в наличии:</p>
+    <!-- ВКЛАДКА 1: ЗАДАЧИ -->
+    <div id="duties" class="content active">
+        <div id="duties-container"></div>
+        
+        <!-- Комментарий к задачам -->
+        <div class="section">
+            <h3>💬 Заметка к задачам</h3>
+            <textarea id="comment-duties" rows="2" placeholder="Не успели? Сломалось?"></textarea>
         </div>
+        <div class="spacer"></div>
+    </div>
 
-        <div id="products-list" class="list-container"></div>
+    <!-- ВКЛАДКА 2: ПРОДУКТЫ -->
+    <div id="products" class="content">
+        <div id="products-container"></div>
 
-        <div class="comment-section">
-            <label for="comment-products">💬 Заметка к закупке:</label>
-            <textarea id="comment-products" rows="2" placeholder="Жалобы на качество? Что-то срочное?"></textarea>
+        <!-- Комментарий к продуктам -->
+        <div class="section">
+            <h3>💬 Заметка к закупке</h3>
+            <textarea id="comment-products" rows="2" placeholder="Качество? Срочно?"></textarea>
         </div>
+        <div class="spacer"></div>
+    </div>
 
-        <div class="buttons-row">
-            <button class="secondary-btn" onclick="goToStep1()">⬅️ Назад</button>
-            <button class="main-btn" onclick="sendData()">✅ Отправить</button>
-        </div>
+    <!-- Кнопка отправить (всегда внизу) -->
+    <div class="footer">
+        <button class="main-btn" onclick="sendData()">✅ Отправить отчет</button>
     </div>
 
     <script src="script.js"></script>
