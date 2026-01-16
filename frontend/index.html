@@ -8,17 +8,17 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Верхнее меню (Табы) -->
+
     <div class="tabs">
         <div class="tab active" onclick="switchTab('duties')">👷 Задачи</div>
         <div class="tab" onclick="switchTab('products')">📦 Остатки</div>
     </div>
 
-    <!-- ВКЛАДКА 1: ЗАДАЧИ -->
+
     <div id="duties" class="content active">
         <div id="duties-container"></div>
         
-        <!-- Комментарий к задачам -->
+
         <div class="section">
             <h3>💬 Заметка к задачам</h3>
             <textarea id="comment-duties" rows="2" placeholder="Не успели? Сломалось?"></textarea>
@@ -26,19 +26,20 @@
         <div class="spacer"></div>
     </div>
 
-    <!-- ВКЛАДКА 2: ПРОДУКТЫ -->
+
     <div id="products" class="content">
         <div id="products-container"></div>
 
-        <!-- Комментарий к продуктам -->
+
         <div class="section">
+            <button class="action-btn" onclick="markAllProducts()">✅ Отметить все как "Есть"</button>
             <h3>💬 Заметка к закупке</h3>
             <textarea id="comment-products" rows="2" placeholder="Качество? Срочно?"></textarea>
         </div>
         <div class="spacer"></div>
     </div>
 
-    <!-- Кнопка отправить (всегда внизу) -->
+
     <div class="footer">
         <button class="main-btn" onclick="sendData()">✅ Отправить отчет</button>
     </div>
